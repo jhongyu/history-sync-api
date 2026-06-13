@@ -1,0 +1,13 @@
+{
+  "name": "history-sync-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-03-10",
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "history-records",
+      "database_id": "eeac01d8-ea32-44a6-9d23-0f22784532e1",
+    },
+  ],
+}
