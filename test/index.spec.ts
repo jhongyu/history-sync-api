@@ -8,7 +8,8 @@ import { ErrorResponse, SuccessResponse } from "../src/utils/response";
 
 type TestEnv = Env & Bindings;
 
-const TEST_TOKEN = "test-token";
+const TEST_USERNAME = "admin";
+const TEST_PASSWORD = "123456";
 
 const getBindings = (): TestEnv => {
   const db = (env as unknown as { DB: D1Database }).DB;
@@ -16,7 +17,8 @@ const getBindings = (): TestEnv => {
   return {
     ...(env as unknown as object),
     DB: db,
-    API_KEY: TEST_TOKEN,
+    USERNAME: TEST_USERNAME,
+    PASSWORD: TEST_PASSWORD,
   } as TestEnv;
 };
 
@@ -80,7 +82,7 @@ const request = async (
   const headers = new Headers(init.headers);
 
   if (options.auth !== false) {
-    headers.set("Authorization", `Bearer ${TEST_TOKEN}`);
+    headers.set("Authorization", `Basic ${btoa(`${TEST_USERNAME}:${TEST_PASSWORD}`)}`);
   }
 
   const response = await worker.fetch(
@@ -125,7 +127,7 @@ describe("API", () => {
     await setupDatabase();
   });
 
-  it("rejects requests without bearer token", async () => {
+  it("rejects requests without basic auth credentials", async () => {
     const res = await request("/records", {}, { auth: false });
 
     expect(res.status).toBe(401);

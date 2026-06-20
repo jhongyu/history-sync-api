@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { bearerAuth } from "hono/bearer-auth";
+import { basicAuth } from "hono/basic-auth";
 import { logger } from "hono/logger";
 import { prettyJSON } from "hono/pretty-json";
 
@@ -8,7 +8,8 @@ import { createPageValidator, updatePageValidator } from "./validators/records";
 
 export type Bindings = {
   DB: D1Database;
-  API_KEY: string;
+  USERNAME: string;
+  PASSWORD: string;
 };
 
 export type Record = {
@@ -25,8 +26,9 @@ app.use(
   "*",
   prettyJSON(),
   logger(),
-  bearerAuth<{ Bindings: Bindings }>({
-    verifyToken: (token, c) => token === c.env.API_KEY,
+  basicAuth({
+    verifyUser: (username, password, c) =>
+      username === c.env.USERNAME && password === c.env.PASSWORD,
   }),
 );
 
